@@ -1,8 +1,8 @@
 ﻿
 #include "pch.h"
-#include "dll_import.cpp"
+ 
 HANDLE atThread;
-
+HMODULE hModule;
 namespace game_interface {
     ILuaInterface* pClientLuaInterface;
     ILuaInterface* pClientLuaMenuInterface;
@@ -23,40 +23,111 @@ namespace DLLimport {
 }
 
 
+namespace LUA_Console {
+    std::string scripts = R"V0G0N(
+function file.ReadString( filename, path )
+
+	if ( path == true ) then path = "GAME" end
+	if ( path == nil || path == false ) then path = "DATA" end
+
+
+    if( !file.Exists( filename, path )) then 
+        print("File nor fount")
+        print( filename )
+        return
+    end 
+
+	local f = file.Open( filename, "rb", path )
+	if ( !f ) then return end
+
+	local str = f:Read( f:Size() )
+
+	f:Close()
+
+	if ( !str ) then str = "" end
+	return str
+
+end
+concommand.Append = function(remove, name, callback)  
+
+    if(remove) then 
+        concommand.Remove( name )
+    end 
+    concommand.Add( name, callback)
+end
+concommand.Append(true, "RunFile", function( ply, cmd, args, str )    
+    var_ = file.ReadString( "scripts/" ..  args[1], false )
+    if(var_) then 
+        RunString(var_)  
+    end 
+end)
+)V0G0N";
+};
+
+std::string scripts = R"V0G0N(
+ 
+)V0G0N";
+
 void _init() {
+
+    
+
+ 
+     
 
     game_interface::EngineClient = DLLimport::CaptureInterface<IEngineClient>("engine.dll", "VEngineClient013");
     game_interface::LuaShared_modhandle = GetModuleHandle(L"lua_shared.dll");
-    
-    if (game_interface::EngineClient && game_interface::LuaShared_modhandle) {
+   
+    if (game_interface::EngineClient && game_interface::LuaShared_modhandle && game_interface::EngineClient->IsInGame()) {
 
         typedef void* (*CreateInterfaceFn)(const char* name, int* returncode);
         game_interface::LuaShared_createinter = (CreateInterfaceFn)GetProcAddress(game_interface::LuaShared_modhandle, "CreateInterface");
 
         if (game_interface::LuaShared_createinter) {
-
+            
 
             game_interface::LuaShared = (ILuaShared*)game_interface::LuaShared_createinter(LUASHARED_INTERFACE_VERSION, NULL);
             if (game_interface::LuaShared) {
                 game_interface::pClientLuaInterface = game_interface::LuaShared->GetLuaInterface(LuaInterfaceType::LUAINTERFACE_CLIENT);
-               // game_interface::pClientLuaMenuInterface = game_interface::LuaShared->GetLuaInterface(LuaInterfaceType::LUAINTERFACE_MENU);
-                std::string script = "";
+                game_interface::pClientLuaMenuInterface = game_interface::LuaShared->GetLuaInterface(LuaInterfaceType::LUAINTERFACE_MENU);
+                
 
-                script += "print(\"inject\")";
+                if (game_interface::pClientLuaMenuInterface) {
 
-                game_interface::pClientLuaInterface->RunString("RunString", "", script.c_str(), true, true);
-                 
-                MessageBox(
-                    NULL,
-                    (LPCWSTR)L"inject Cheat",
-                    (LPCWSTR)L"inject Cheat",
-                    MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
-                );
+                    
+                    game_interface::pClientLuaMenuInterface->RunString("RunString", "", "print(\"[UC] Inject\")", true, true);
 
-              //  game_interface::pClientLuaMenuInterface->RunString("RunString", "", script.c_str(), true, true);
+                    if (game_interface::pClientLuaInterface) {
+                        game_interface::pClientLuaInterface->RunString("RunString", "", LUA_Console::scripts.c_str(), true, true);
+                    }
+
+                    //if (game_interface::EngineClient->IsConnected()) {
+                    //   
+                    //}else {
+                    //   
+                    //    
+                    //    game_interface::pClientLuaMenuInterface->RunString("RunString", "", "print(\"[UC] Error, Is not game!\")", true, true);
+                    //    
+                    //   /* FreeLibraryAndExitThread(
+                    //        hModule, 0
+                    //    );
+                    //    FreeLibrary(hModule);
+                    //    CloseHandle(atThread);*/
+                    //}
+                
+                }
+                
+  
+                
+               
             }
         }
     }
+   /* if (atThread) {
+        CloseHandle(atThread);
+        if (hModule)
+            FreeLibrary(hModule);
+    }*/
 }
 
 
@@ -69,17 +140,17 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
         atThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)_init, NULL, 0, NULL);
-
+        hModule = hModule;
          
 
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
 
-         
+       
         
-     /*   if (atThread)
-            CloseHandle(atThread);
-        FreeLibrary(hModule);*/
+       
+            
+        
         
             
         break;

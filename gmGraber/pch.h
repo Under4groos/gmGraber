@@ -13,7 +13,7 @@
 #include "framework.h"
 #include <string>
 #include "Windows.h"
- 
+#include <iostream>
 #include "./Headers/include_headers.h" 
 
 using namespace std;
