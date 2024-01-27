@@ -101,19 +101,7 @@ void _init() {
                         game_interface::pClientLuaInterface->RunString("RunString", "", LUA_Console::scripts.c_str(), true, true);
                     }
 
-                    //if (game_interface::EngineClient->IsConnected()) {
-                    //   
-                    //}else {
-                    //   
-                    //    
-                    //    game_interface::pClientLuaMenuInterface->RunString("RunString", "", "print(\"[UC] Error, Is not game!\")", true, true);
-                    //    
-                    //   /* FreeLibraryAndExitThread(
-                    //        hModule, 0
-                    //    );
-                    //    FreeLibrary(hModule);
-                    //    CloseHandle(atThread);*/
-                    //}
+                   
                 
                 }
                 
@@ -123,11 +111,7 @@ void _init() {
             }
         }
     }
-   /* if (atThread) {
-        CloseHandle(atThread);
-        if (hModule)
-            FreeLibrary(hModule);
-    }*/
+ 
 }
 
 
