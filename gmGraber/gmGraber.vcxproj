@@ -140,10 +140,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Headers\GLua.h" />
+    <ClInclude Include="Headers\IEngineClient.h" />
+    <ClInclude Include="Headers\include_headers.h" />
+    <ClInclude Include="Headers\LuaBase.h" />
+    <ClInclude Include="Headers\Types.h" />
+    <ClInclude Include="Headers\UserData.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dll_import.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

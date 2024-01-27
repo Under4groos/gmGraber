@@ -8,6 +8,13 @@
 #define PCH_H
 
 // Добавьте сюда заголовочные файлы для предварительной компиляции
-#include "framework.h"
 
+ 
+#include "framework.h"
+#include <string>
+#include "Windows.h"
+ 
+#include "./Headers/include_headers.h" 
+
+using namespace std;
 #endif //PCH_H
